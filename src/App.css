@@ -5,20 +5,85 @@
 body {
     padding: 12px;
 }
-
-.productTable, .productTable td, .productTable th {
-    border: 1px solid black;
-    border-collapse: collapse;
-    padding: 8px;
+.productTable {
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
 }
 
-.newItemForm th {
-    text-align: left;
+.productTable {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.wantsAndNeeds {
+    display: grid;
+    grid-template-columns: auto;
+    grid-column-gap: 14px;
+}
+@media only screen and (min-width: 800px) {
+    .wantsAndNeeds {
+        grid-template-columns: auto auto;
+    }
 }
 
 .expenseBlock {
     display: inline-block;
     vertical-align: top;
-    padding: 16px;
     border: 1px solid black;
+    box-sizing: border-box;
+    padding: 0 18px 18px 18px;
+}
+
+.datepicker {
+    text-align: center;
+    margin: 0 0 12px 0;
+    padding: 8px 0 18px 0;
+    border-bottom: 1px solid black;
+}
+
+select {
+    font-size: 16px;
+}
+
+.gridForm {
+    display: grid;
+    grid-template: auto auto auto;
+    grid-gap: 6px;
+}
+
+.gridFormLabel {
+    grid-column: 1/2;
+}
+
+.gridFormInput {
+    grid-column: 2/4;
+    font-size: 12px;
+}
+
+.gridFormSubmit {
+    grid-row: 3/4;
+    grid-column: 3/4;
+}
+
+.itemRow {
+    display: grid;
+    grid-template-columns: 25% 25% auto auto auto;
+    border-top: 1px solid black;
+    padding: 12px;
+}
+
+.itemRow:first-child {
+    border-top: none;
+}
+.itemRow:last-child {
+    border-bottom: 1px solid black;
+}
+
+.itemRowItem {
+    grid-column-end: span 1;
+}
+
+.currentEdit {
+    border-top: none;
 }
