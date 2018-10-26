@@ -17,15 +17,24 @@ class MonthlyInfo extends Component {
         }
     }
 
+    editPurchasedItem(index) {
+
+    }
+
     render() {
         var spent = 0;
-        for (var i = 0; i < this.props.purchases.length; i ++) {
-            spent += this.props.purchases[i].price
+        var purchases = <li>Nothing yet!</li>;
+        if (this.props.purchases) {
+            for (var i = 0; i < this.props.purchases.length; i ++) {
+                spent += this.props.purchases[i].price
+            }
+            purchases = this.props.purchases.map((purchase, index) =>
+                <li key={index}>
+                    {purchase.name} (${purchase.price}) 
+                    <button onClick={this.editPurchasedItem.bind(this, index)}>Edit</button>
+                </li>
+            )
         }
-
-        const purchases = this.props.purchases.map(purchase =>
-            <li>{purchase.name} (${purchase.price})</li>
-        )
 
         return (
             <div>

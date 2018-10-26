@@ -18,21 +18,19 @@ body {
 
 .wantsAndNeeds {
     display: grid;
-    grid-template-columns: auto;
-    grid-column-gap: 14px;
+    grid-template-columns: 100%;
+    grid-gap: 14px;
 }
-@media only screen and (min-width: 800px) {
+@media only screen and (min-width: 960px) {
     .wantsAndNeeds {
-        grid-template-columns: auto auto;
+        grid-template-columns: 1fr 1fr;
     }
 }
 
 .expenseBlock {
-    display: inline-block;
-    vertical-align: top;
     border: 1px solid black;
-    box-sizing: border-box;
     padding: 0 18px 18px 18px;
+    box-sizing: border-box;
 }
 
 .datepicker {
@@ -68,7 +66,7 @@ select {
 
 .itemRow {
     display: grid;
-    grid-template-columns: 25% 25% auto auto auto;
+    grid-template-columns: 26% 25% 17% 17% 17%;
     border-top: 1px solid black;
     padding: 12px;
 }

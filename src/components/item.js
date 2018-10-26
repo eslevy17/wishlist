@@ -47,25 +47,25 @@ class Item extends Component {
 
     render() {
         let cancelButton = null;
-        let deleteButton = <button onClick={this.delete.bind(this)}>Delete</button>
-        let editButton = <button onClick={this.edit.bind(this)}>Edit</button>
+        let deleteButton = <span className="itemRowItem"><button onClick={this.delete.bind(this)}>Delete</button></span>
+        let editButton = <span className="itemRowItem"><button onClick={this.edit.bind(this)}>Edit</button></span>
         let updateButton = null;
         let editForm = null;
-        let purchaseButton = <button onClick={this.purchase.bind(this)}>Purchase</button>
+        let purchaseButton = <span className="itemRowItem"><button onClick={this.purchase.bind(this)}>Purchase</button></span>
 
-        let nameInput = <input type="text" name="name" placeholder={this.props.name} value={this.state.name} onChange={this.handleChange.bind(this)} />
-        let priceInput = <input type="number" name="price" min="0" placeholder={this.props.price} value={this.state.price} onChange={this.handleChange.bind(this)} />
+        let nameInput = <input className="itemRowItem" type="text" name="name" placeholder={this.props.name} value={this.state.name} onChange={this.handleChange.bind(this)} />
+        let priceInput = <input className="itemRowItem" type="number" name="price" min="0" placeholder={this.props.price} value={this.state.price} onChange={this.handleChange.bind(this)} />
 
         if (this.state.editing) {
-            updateButton = <button onClick={this.update.bind(this)}>Update</button>
-            cancelButton = <button onClick={this.cancel.bind(this)}>Cancel</button>
+            updateButton = <span className="itemRowItem"><button onClick={this.update.bind(this)}>Update</button></span>
+            cancelButton = <span className="itemRowItem"><button onClick={this.cancel.bind(this)}>Cancel</button></span>
             purchaseButton = null;
             editForm =
-                        <div class="itemRow currentEdit">
-                            <span className="itemRowItem">{nameInput}</span>
-                            <span className="itemRowItem">{priceInput}</span>
-                            <span className="itemRowItem">{updateButton}</span>
-                            <span className="itemRowItem">{cancelButton}</span>
+                        <div className="itemRow currentEdit">
+                            {nameInput}
+                            {priceInput}
+                            {updateButton}
+                            {cancelButton}
                         </div>;
             deleteButton = null;
             editButton = null;
@@ -78,9 +78,9 @@ class Item extends Component {
             <div id={this.props.name} className="itemRow">
                 <span className="itemRowItem">{this.props.name}</span>
                 <span className="itemRowItem">${this.props.price}</span>
-                <span className="itemRowItem">{deleteButton}</span>
-                <span className="itemRowItem">{editButton}</span>
-                <span className="itemRowItem">{purchaseButton}</span>
+                {deleteButton}
+                {editButton}
+                {purchaseButton}
             </div>
             {editForm}
             </React.Fragment>

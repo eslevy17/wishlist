@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import Item from './components/item';
@@ -10,26 +9,13 @@ import MonthlyInfo from './components/monthlyinfo';
 class App extends Component {
     constructor() {
         super();
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         this.state = {
             wants: [{name: 'computer', price: 300}],
             needs: [{name: 'random bills', price: 100}],
-            activeMonth: 'January',
-            activeYear: '2018',
-            purchases: {
-                January: [{name: 'computer',
-                            price: 40}],
-                February: [],
-                March: [],
-                April: [],
-                May: [],
-                June: [],
-                July: [],
-                August: [],
-                September: [],
-                October: [],
-                November: [],
-                December: [],
-            },
+            activeMonth: months[new Date().getMonth()],
+            activeYear: new Date().getFullYear().toString(),
+            purchases: {},
         }
     }
 
@@ -65,6 +51,9 @@ class App extends Component {
 
     purchase(name, price) {
         var newPurchases = this.state.purchases;
+        if (!newPurchases[this.state.activeMonth]) {
+            newPurchases[this.state.activeMonth] = []
+        }
         newPurchases[this.state.activeMonth].push({
             name: name,
             price: price});
@@ -97,9 +86,6 @@ class App extends Component {
                 purchase={this.purchase.bind(this)}
                 list='needs'
             />
-        );
-        const purchases = this.state.purchases.January.map((purchase) =>
-            <p>{purchase}</p>
         );
 
         return (

@@ -15,17 +15,28 @@ class DatePicker extends Component {
             currentYear: this.props.year
         })
     }
+    componentDidMount() {
+        document.getElementById('monthSelector').options[new Date().getMonth()].selected = true;
+        document.getElementById('yearSelector').options[0].selected = true;
+    }
 
     handleChange(event) {
         this.props.onChange(event.target.name, event.target.value);
     }
 
     render() {
+        var yearList = [];
+        for (var i = 0; i < 5; i ++) {
+            yearList.push(new Date().getFullYear() + i)
+        }
+        var newYearList = yearList.map(year =>
+            <option key={year} value={year}>{year}</option>
+        )
 
         return (
             <div className="datepicker">
-            <label htmlFor="monthpicker"> Viewing </label>
-                <select name="activeMonth" onChange={this.handleChange.bind(this)}>
+            <label htmlFor="monthSelector"> Viewing </label>
+                <select id="monthSelector" name="activeMonth" onChange={this.handleChange.bind(this)}>
                     <option value="January">January</option>
                     <option value="February">February</option>
                     <option value="March">March</option>
@@ -40,10 +51,9 @@ class DatePicker extends Component {
                     <option value="December">December</option>
                 </select>
 
-                <label htmlFor="yearpicker"> of: </label>
-                <select name="activeYear" onChange={this.handleChange.bind(this)}>
-                    <option value="2018">2018</option>
-                    <option value="2019">2019</option>
+                <label htmlFor="yearSelector"> of: </label>
+                <select id="yearSelector" name="activeYear" onChange={this.handleChange.bind(this)}>
+                    {newYearList}
                 </select>
             </div>
         )
