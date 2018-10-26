@@ -30,7 +30,7 @@ class MonthlyInfo extends Component {
             }
             purchases = this.props.purchases.map((purchase, index) =>
                 <li key={index}>
-                    {purchase.name} (${purchase.price}) 
+                    {purchase.name} (${purchase.price})
                     <button onClick={this.editPurchasedItem.bind(this, index)}>Edit</button>
                 </li>
             )

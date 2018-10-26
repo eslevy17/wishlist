@@ -49,12 +49,12 @@ class App extends Component {
         })
     }
 
-    purchase(name, price) {
+    purchase(name, price, month, year) {
         var newPurchases = this.state.purchases;
-        if (!newPurchases[this.state.activeMonth]) {
-            newPurchases[this.state.activeMonth] = []
+        if (!newPurchases[month]) {
+            newPurchases[month] = []
         }
-        newPurchases[this.state.activeMonth].push({
+        newPurchases[month].push({
             name: name,
             price: price});
         this.setState({
@@ -69,6 +69,8 @@ class App extends Component {
                 price={want.price}
                 key={want.name}
                 index={index}
+                activeMonth={this.state.activeMonth}
+                activeYear={this.state.activeYear}
                 delete={this.delete.bind(this)}
                 update={this.update.bind(this)}
                 purchase={this.purchase.bind(this)}
@@ -81,17 +83,42 @@ class App extends Component {
                 price={need.price}
                 key={need.name}
                 index={index}
+                activeMonth={this.state.activeMonth}
+                activeYear={this.state.activeYear}
                 delete={this.delete.bind(this)}
                 update={this.update.bind(this)}
                 purchase={this.purchase.bind(this)}
                 list='needs'
             />
         );
+        // const purchasedItems = this.state.purchases[this.state.activeMonth].map((purchasedItem, index)=>
+        //     <Item
+        //         name={purchasedItem.name}
+        //         price={purchasedItem.price}
+        //         key={purchasedItem.name}
+        //         index={index}
+        //         activeMonth={this.state.activeMonth}
+        //         activeYear={this.state.activeYear}
+        //         delete={this.delete.bind(this)}
+        //         update={this.update.bind(this)}
+        //         purchase={this.purchase.bind(this)}
+        //         list='purchasedItems'
+        //     />
+        // )
 
         return (
             <div>
-                <DatePicker month={this.state.activeMonth} year={this.state.activeYear} onChange={this.handleDateChange.bind(this)} />
-                <MonthlyInfo month={this.state.activeMonth} year={this.state.activeYear} purchases={this.state.purchases[this.state.activeMonth]}/>
+                <DatePicker
+                    month={this.state.activeMonth}
+                    year={this.state.activeYear}
+                    onChange={this.handleDateChange.bind(this)}
+                />
+
+                <MonthlyInfo
+                    month={this.state.activeMonth}
+                    year={this.state.activeYear}
+                    purchases={this.state.purchases[this.state.activeMonth]}
+                />
 
                 <div className="wantsAndNeeds">
                     <div className="expenseBlock">

@@ -7,6 +7,9 @@ class Item extends Component {
             name: this.props.name,
             price: this.props.price,
             editing: false,
+            purchasing: false,
+            activeMonth: this.props.activeMonth,
+            activeYear: this.props.activeYear
         }
     }
 
@@ -15,7 +18,10 @@ class Item extends Component {
     }
 
     edit() {
-        this.setState({editing: true});
+        this.setState({
+            editing: true,
+            purchasing: false
+        });
     }
 
     handleChange(event) {
@@ -34,43 +40,68 @@ class Item extends Component {
         })
     }
 
-    cancel(event) {
+    cancelEdit(event) {
         event.preventDefault();
         this.setState({editing: false});
     }
 
-    purchase(event) {
+    purchaseStart(event) {
         event.preventDefault();
-        this.props.purchase(this.props.name, this.props.price);
+        this.setState({
+            purchasing: true,
+            editing: false
+        })
+    }
+
+    purchaseConfirm(event) {
+        event.preventDefault();
+        this.props.purchase(this.state.name, this.state.price, this.state.activeMonth, this.state.activeYear);
         this.delete();
+        this.setState({
+            purchasing: false,
+        })
+    }
+
+    cancelPurchase(event) {
+        event.preventDefault();
+        this.setState({purchasing: false})
     }
 
     render() {
-        let cancelButton = null;
-        let deleteButton = <span className="itemRowItem"><button onClick={this.delete.bind(this)}>Delete</button></span>
-        let editButton = <span className="itemRowItem"><button onClick={this.edit.bind(this)}>Edit</button></span>
-        let updateButton = null;
-        let editForm = null;
-        let purchaseButton = <span className="itemRowItem"><button onClick={this.purchase.bind(this)}>Purchase</button></span>
+        let standardForm =
+            <React.Fragment>
+                <span className="itemRowItem"><button onClick={this.delete.bind(this)}>Delete</button></span>
+                <span className="itemRowItem"><button onClick={this.edit.bind(this)}>Edit</button></span>
+                <span className="itemRowItem"><button onClick={this.purchaseStart.bind(this)}>Purchase</button></span>
+            </React.Fragment>
 
-        let nameInput = <input className="itemRowItem" type="text" name="name" placeholder={this.props.name} value={this.state.name} onChange={this.handleChange.bind(this)} />
-        let priceInput = <input className="itemRowItem" type="number" name="price" min="0" placeholder={this.props.price} value={this.state.price} onChange={this.handleChange.bind(this)} />
+        let editForm = null;
+        let purchaseForm = null;
 
         if (this.state.editing) {
-            updateButton = <span className="itemRowItem"><button onClick={this.update.bind(this)}>Update</button></span>
-            cancelButton = <span className="itemRowItem"><button onClick={this.cancel.bind(this)}>Cancel</button></span>
-            purchaseButton = null;
+            standardForm = null;
             editForm =
-                        <div className="itemRow currentEdit">
-                            {nameInput}
-                            {priceInput}
-                            {updateButton}
-                            {cancelButton}
-                        </div>;
-            deleteButton = null;
-            editButton = null;
-            nameInput = null;
-            priceInput = null;
+                <div className="itemRow currentEdit">
+                    <input className="itemRowItem" type="text" name="name" placeholder={this.props.name} value={this.state.name} onChange={this.handleChange.bind(this)} />
+                    <input className="itemRowItem" type="number" name="price" min="0" placeholder={this.props.price} value={this.state.price} onChange={this.handleChange.bind(this)} />
+                    <span className="itemRowItem"><button onClick={this.update.bind(this)}>Update</button></span>
+                    <span className="itemRowItem"><button onClick={this.cancelEdit.bind(this)}>Cancel</button></span>
+                </div>
+        }
+
+        if (this.state.purchasing) {
+            standardForm = null;
+            purchaseForm =
+                <div className="itemRow currentEdit">
+                    <select className="itemRowItem">
+                        <option>{this.props.activeMonth}</option>
+                    </select>
+                    <select className="itemRowItem">
+                        <option>{this.props.activeYear}</option>
+                    </select>
+                    <span className="itemRowItem"><button onClick={this.purchaseConfirm.bind(this)}>Purchase!</button></span>
+                    <span className="itemRowItem"><button onClick={this.cancelPurchase.bind(this)}>Cancel</button></span>
+                </div>
         }
 
         return (
@@ -78,11 +109,10 @@ class Item extends Component {
             <div id={this.props.name} className="itemRow">
                 <span className="itemRowItem">{this.props.name}</span>
                 <span className="itemRowItem">${this.props.price}</span>
-                {deleteButton}
-                {editButton}
-                {purchaseButton}
+                {standardForm}
             </div>
             {editForm}
+            {purchaseForm}
             </React.Fragment>
         )
     }
