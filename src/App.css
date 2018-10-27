@@ -85,3 +85,17 @@ select {
 .currentEdit {
     border-top: none;
 }
+
+.monthChartRow {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    position: relative;
+}
+
+.monthBar {
+    text-align: center;
+}
+
+.textAlignCenter {
+    text-align: center;
+}

@@ -5,14 +5,23 @@ import Item from './components/item';
 import NewItemForm from './components/newitemform';
 import DatePicker from './components/datepicker';
 import MonthlyInfo from './components/monthlyinfo';
+import MonthlyChart from './components/monthlychart';
 
 class App extends Component {
     constructor() {
         super();
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         this.state = {
-            wants: [{name: 'computer', price: 300}],
-            needs: [{name: 'random bills', price: 100}],
+            wants: [
+                {name: 'computer', price: 300},
+                {name: 'shoes', price: 100},
+                {name: 'socks', price: 40},
+            ],
+            needs: [
+                {name: 'random bills', price: 100},
+                {name: 'other bills', price: 50},
+                {name: 'even more bills', price: 80},
+            ],
             activeMonth: months[new Date().getMonth()],
             activeYear: new Date().getFullYear().toString(),
             purchases: {},
@@ -113,6 +122,8 @@ class App extends Component {
                     year={this.state.activeYear}
                     onChange={this.handleDateChange.bind(this)}
                 />
+
+                <MonthlyChart purchases={this.state.purchases} />
 
                 <MonthlyInfo
                     month={this.state.activeMonth}
