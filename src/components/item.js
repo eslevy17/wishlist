@@ -7,6 +7,7 @@ class Item extends Component {
             name: this.props.name,
             price: this.props.price,
             editing: false,
+            midEdit: false,
             purchasing: false,
             activeMonth: this.props.activeMonth,
             activeYear: this.props.activeYear
@@ -25,7 +26,10 @@ class Item extends Component {
     }
 
     handleChange(event) {
-        this.setState({[event.target.name]: event.target.value})
+        this.setState({
+            [event.target.name]: event.target.value,
+            midEdit: true
+        });
     }
 
     update(event) {
@@ -36,13 +40,17 @@ class Item extends Component {
         }
         this.props.update(updatedItem, this.props.index, this.props.list);
         this.setState({
-            editing: false
+            editing: false,
+            midEdit: false
         })
     }
 
     cancelEdit(event) {
         event.preventDefault();
-        this.setState({editing: false});
+        this.setState({
+            editing: false,
+            midEdit: false
+        });
     }
 
     purchaseStart(event) {
@@ -59,12 +67,22 @@ class Item extends Component {
         this.delete();
         this.setState({
             purchasing: false,
+            midEdit: false
         })
     }
 
     cancelPurchase(event) {
         event.preventDefault();
-        this.setState({purchasing: false})
+        this.setState({
+            purchasing: false,
+            midEdit: false
+        })
+    }
+
+    componentDidUpdate() {
+        if (this.state.purchasing && !this.state.midEdit) {
+            document.getElementById('itemMonthSelector').options[new Date().getMonth()].selected = true
+        }
     }
 
     render() {
@@ -93,15 +111,26 @@ class Item extends Component {
             standardForm = null;
             purchaseForm =
                 <div className="itemRow currentEdit">
-                    <select className="itemRowItem">
-                        <option>{this.props.activeMonth}</option>
+                    <select id="itemMonthSelector" name="activeMonth" className="itemRowItem" onChange={this.handleChange.bind(this)}>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
                     </select>
                     <select className="itemRowItem">
                         <option>{this.props.activeYear}</option>
                     </select>
                     <span className="itemRowItem"><button onClick={this.purchaseConfirm.bind(this)}>Purchase!</button></span>
                     <span className="itemRowItem"><button onClick={this.cancelPurchase.bind(this)}>Cancel</button></span>
-                </div>
+                </div>;
         }
 
         return (
