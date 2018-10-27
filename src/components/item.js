@@ -5,7 +5,7 @@ class Item extends Component {
         super(props);
         this.state = {
             name: this.props.name,
-            price: this.props.price,
+            price: parseInt(this.props.price),
             editing: false,
             midEdit: false,
             purchasing: false,
@@ -36,7 +36,7 @@ class Item extends Component {
         event.preventDefault();
         let updatedItem = {
             name: this.state.name,
-            price: this.state.price
+            price: parseInt(this.state.price)
         }
         this.props.update(updatedItem, this.props.index, this.props.list);
         this.setState({
@@ -63,7 +63,7 @@ class Item extends Component {
 
     purchaseConfirm(event) {
         event.preventDefault();
-        this.props.purchase(this.state.name, this.state.price, this.state.activeMonth, this.state.activeYear);
+        this.props.purchase(this.state.name, parseInt(this.state.price), this.state.activeMonth, this.state.activeYear);
         this.delete();
         this.setState({
             purchasing: false,
@@ -88,9 +88,9 @@ class Item extends Component {
     render() {
         let standardForm =
             <React.Fragment>
-                <span className="itemRowItem"><button onClick={this.delete.bind(this)}>Delete</button></span>
-                <span className="itemRowItem"><button onClick={this.edit.bind(this)}>Edit</button></span>
-                <span className="itemRowItem"><button onClick={this.purchaseStart.bind(this)}>Purchase</button></span>
+                <span className="itemRowItem textAlignCenter"><button onClick={this.purchaseStart.bind(this)}>Purchase</button></span>
+                <span className="itemRowItem textAlignCenter"><button onClick={this.edit.bind(this)}>Edit</button></span>
+                <span className="itemRowItem textAlignCenter"><button onClick={this.delete.bind(this)}>Delete</button></span>
             </React.Fragment>
 
         let editForm = null;
@@ -102,8 +102,8 @@ class Item extends Component {
                 <div className="itemRow currentEdit">
                     <input className="itemRowItem" type="text" name="name" placeholder={this.props.name} value={this.state.name} onChange={this.handleChange.bind(this)} />
                     <input className="itemRowItem" type="number" name="price" min="0" placeholder={this.props.price} value={this.state.price} onChange={this.handleChange.bind(this)} />
-                    <span className="itemRowItem"><button onClick={this.update.bind(this)}>Update</button></span>
-                    <span className="itemRowItem"><button onClick={this.cancelEdit.bind(this)}>Cancel</button></span>
+                    <span className="itemRowItem textAlignCenter"><button onClick={this.update.bind(this)}>Update</button></span>
+                    <span className="itemRowItem textAlignCenter"><button onClick={this.cancelEdit.bind(this)}>Cancel</button></span>
                 </div>
         }
 
@@ -128,8 +128,8 @@ class Item extends Component {
                     <select className="itemRowItem">
                         <option>{this.props.activeYear}</option>
                     </select>
-                    <span className="itemRowItem"><button onClick={this.purchaseConfirm.bind(this)}>Purchase!</button></span>
-                    <span className="itemRowItem"><button onClick={this.cancelPurchase.bind(this)}>Cancel</button></span>
+                    <span className="itemRowItem textAlignCenter"><button onClick={this.purchaseConfirm.bind(this)}>Purchase!</button></span>
+                    <span className="itemRowItem textAlignCenter"><button onClick={this.cancelPurchase.bind(this)}>Cancel</button></span>
                 </div>;
         }
 

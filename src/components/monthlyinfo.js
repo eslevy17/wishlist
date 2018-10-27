@@ -38,7 +38,7 @@ class MonthlyInfo extends Component {
 
         return (
             <div>
-                <h4>Current Month: {this.state.month} of {this.state.year}</h4>
+                <h4>Details for: {this.state.month} of {this.state.year}</h4>
                 <p>Limit: ${this.state.limit}</p>
                 <p>Spent: ${spent}</p>
                 <p>Available: ${this.state.limit - spent}</p>
