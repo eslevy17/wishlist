@@ -41,40 +41,29 @@ class NewItemForm extends Component {
         return (
             <React.Fragment>
                 <h4>Add new:</h4>
-                <form onSubmit={this.handleSubmit.bind(this)}>
-                    <table className="newItemForm">
-                        <tbody>
-                        <tr>
-                            <th><label htmlFor="name">Name:</label></th>
-                            <td>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={this.state.name}
-                                    onChange={this.handleNameChange.bind(this)}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><label htmlFor="price">Price:</label></th>
-                            <td>
-                                <input
-                                    type="number"
-                                    name="price"
-                                    min="0"
-                                    value={this.state.price}
-                                    onChange={this.handlePriceChange.bind(this)}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <td>
-                                <input type="submit" value="Submit" />
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <form className="gridForm" onSubmit={this.handleSubmit.bind(this)}>
+
+                    <label className="gridFormLabel" htmlFor="name">Name:</label>
+                    <input
+                        className="gridFormInput"
+                        type="text"
+                        name="name"
+                        value={this.state.name}
+                        onChange={this.handleNameChange.bind(this)}
+                    />
+
+                    <label className="gridFormLabel" htmlFor="price">Price:</label>
+                    <input
+                        className="gridFormInput"
+                        type="number"
+                        name="price"
+                        min="0"
+                        value={this.state.price}
+                        onChange={this.handlePriceChange.bind(this)}
+                    />
+
+                <input className="gridFormSubmit" type="submit" value="Submit" />
+
                 </form>
             </React.Fragment>
         )
