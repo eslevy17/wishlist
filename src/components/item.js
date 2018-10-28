@@ -86,9 +86,14 @@ class Item extends Component {
     }
 
     render() {
+        var purchaseButton = null;
+        if (this.props.list !== 'purchasedItems') {
+            purchaseButton = <span className="itemRowItem textAlignCenter"><button onClick={this.purchaseStart.bind(this)}>Purchase</button></span>
+        }
+
         let standardForm =
             <React.Fragment>
-                <span className="itemRowItem textAlignCenter"><button onClick={this.purchaseStart.bind(this)}>Purchase</button></span>
+                {purchaseButton}
                 <span className="itemRowItem textAlignCenter"><button onClick={this.edit.bind(this)}>Edit</button></span>
                 <span className="itemRowItem textAlignCenter"><button onClick={this.delete.bind(this)}>Delete</button></span>
             </React.Fragment>

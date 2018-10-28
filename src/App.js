@@ -71,6 +71,22 @@ class App extends Component {
         })
     }
 
+    updatePurchasedItem(updatedItem, index, list, month) {
+        var newPurchases = this.state.purchases;
+        newPurchases[month][index] = updatedItem;
+        this.setState({
+            purchases: newPurchases
+        })
+    }
+
+    deletePurchasedItem(index, list, month) {
+        var newPurchases = this.state.purchases;
+        newPurchases[month].splice(index, 1);
+        this.setState({
+            purchases: newPurchases
+        })
+    }
+
     render() {
         const allWants = this.state.wants.map((want, index) =>
             <Item
@@ -100,23 +116,15 @@ class App extends Component {
                 list='needs'
             />
         );
-        // const purchasedItems = this.state.purchases[this.state.activeMonth].map((purchasedItem, index)=>
-        //     <Item
-        //         name={purchasedItem.name}
-        //         price={purchasedItem.price}
-        //         key={purchasedItem.name}
-        //         index={index}
-        //         activeMonth={this.state.activeMonth}
-        //         activeYear={this.state.activeYear}
-        //         delete={this.delete.bind(this)}
-        //         update={this.update.bind(this)}
-        //         purchase={this.purchase.bind(this)}
-        //         list='purchasedItems'
-        //     />
-        // )
+
+        var purchasedItems = null;
+        if (this.state.purchases[this.state.activeMonth]) {
+            purchasedItems = this.state.purchases[this.state.activeMonth];
+        }
+        // purchases={this.state.purchases[this.state.activeMonth]}
 
         return (
-            <div>
+            <div className="mainApp">
                 <DatePicker
                     month={this.state.activeMonth}
                     year={this.state.activeYear}
@@ -128,7 +136,9 @@ class App extends Component {
                 <MonthlyInfo
                     month={this.state.activeMonth}
                     year={this.state.activeYear}
-                    purchases={this.state.purchases[this.state.activeMonth]}
+                    updatePurchasedItem={this.updatePurchasedItem.bind(this)}
+                    deletePurchasedItem={this.deletePurchasedItem.bind(this)}
+                    purchases={purchasedItems}
                 />
 
                 <div className="wantsAndNeeds">
