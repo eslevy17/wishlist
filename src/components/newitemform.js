@@ -14,6 +14,7 @@ class NewItemForm extends Component {
             name: event.target.value
         })
     }
+
     handlePriceChange(event) {
         this.setState({
             price: parseInt(event.target.value)
@@ -35,6 +36,7 @@ class NewItemForm extends Component {
             name: '',
             price: ''
         })
+        document.getElementById(this.props.list + 'Input').focus();
     }
 
     render() {
@@ -45,6 +47,7 @@ class NewItemForm extends Component {
 
                     <label className="gridFormLabel" htmlFor="name">Name:</label>
                     <input
+                        id={this.props.list + 'Input'}
                         className="gridFormInput"
                         type="text"
                         name="name"
@@ -62,7 +65,7 @@ class NewItemForm extends Component {
                         onChange={this.handlePriceChange.bind(this)}
                     />
 
-                <input className="gridFormSubmit" type="submit" value="Submit" />
+                <button className="gridFormSubmit" type="submit" value="Submit">Submit</button>
 
                 </form>
             </React.Fragment>

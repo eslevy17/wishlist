@@ -5,21 +5,42 @@
 body {
     padding: 12px;
 }
-.productTable {
-    border-top: 1px solid black;
-    border-right: 1px solid black;
-    border-left: 1px solid black;
+
+.textAlignCenter {
+    text-align: center;
 }
 
-.productTable {
-    width: 100%;
-    box-sizing: border-box;
+input {
+    font-size: 14px;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgrey;
+    padding: 4px;
+}
+
+button {
+    /* font-size: 12px;
+    padding: 4px 6px;
+    background-color: white;
+    border: solid;
+    border-width: 1px;
+    border-color: darkgrey;
+    border-radius: 5px; */
+}
+
+/* MAIN APP */
+
+.mainApp {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-gap: 24px;
 }
 
 .wantsAndNeeds {
     display: grid;
     grid-template-columns: 100%;
-    grid-gap: 14px;
+    grid-gap: 24px;
 }
 @media only screen and (min-width: 960px) {
     .wantsAndNeeds {
@@ -33,6 +54,15 @@ body {
     box-sizing: border-box;
 }
 
+.productTable {
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* DATEPICKER */
+
 .datepicker {
     text-align: center;
     margin: 0 0 12px 0;
@@ -44,9 +74,74 @@ select {
     font-size: 16px;
 }
 
+/* MONTHLY INFO */
+
+.monthlyInfo {
+    border: 1px solid black;
+    padding: 0 18px 18px 18px;
+}
+
+.limitRow {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    text-align: center;
+}
+
+.spentBar {
+    background-color: deepskyblue;
+    height: 40px;
+    display: inline-block;
+}
+
+.availableBar {
+    background-color: aliceblue;
+    height: 40px;
+    display: inline-block;
+}
+
+.progressBar {
+
+}
+
+/* ITEM */
+
+.itemRow {
+    display: grid;
+    grid-template-columns: 31% 20% 17% 17% 17%;
+    border-top: 1px solid black;
+    padding: 12px;
+}
+
+.itemRow:first-child {
+
+}
+.itemRow:last-child {
+    border-bottom: 1px solid black;
+}
+
+.itemRowItem {
+    grid-column-end: span 1;
+}
+
+.currentEdit {
+    border-top: none;
+}
+
+/* MONTHLY CHART */
+
+.monthChartRow {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    position: relative;
+    border: 1px solid black;
+    padding: 18px 0 0 0;
+}
+
+/* NEW ITEM FORM */
+
 .gridForm {
     display: grid;
-    grid-template: auto auto auto;
+    grid-template: 1fr 1fr 1fr 1fr;
     grid-gap: 6px;
 }
 
@@ -62,40 +157,7 @@ select {
 .gridFormSubmit {
     grid-row: 3/4;
     grid-column: 3/4;
-}
-
-.itemRow {
-    display: grid;
-    grid-template-columns: 26% 25% 17% 17% 17%;
-    border-top: 1px solid black;
-    padding: 12px;
-}
-
-.itemRow:first-child {
-    border-top: none;
-}
-.itemRow:last-child {
-    border-bottom: 1px solid black;
-}
-
-.itemRowItem {
-    grid-column-end: span 1;
-}
-
-.currentEdit {
-    border-top: none;
-}
-
-.monthChartRow {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    position: relative;
-}
-
-.monthBar {
-    text-align: center;
-}
-
-.textAlignCenter {
-    text-align: center;
+    padding: 4px 0;
+    width: 75%;
+    margin-left: auto;
 }

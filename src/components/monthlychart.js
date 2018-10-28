@@ -12,12 +12,11 @@ class MonthlyChart extends Component {
         this.setState({
             purchases: newProps.purchases
         });
-        console.log(this.state.purchases)
     }
 
     render() {
         let purchases = [];
-        let maxTotalSpent = 0;
+        let maxTotalSpent = 200;
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         for (var k = 0; k < months.length; k ++) {
@@ -40,9 +39,9 @@ class MonthlyChart extends Component {
                 }
             }
             purchases.push(
-                <div key={months[i]} className="monthBar">
-                    <div style={{width:'40px', height: (maxTotalSpent - totalSpent)/2 + 'px', backgroundColor:'pink', margin: '0 auto'}}></div>
-                    <div style={{width:'40px', height: totalSpent/2 + 'px', backgroundColor:'red', margin: '0 auto'}}></div>
+                <div key={months[i]} className="textAlignCenter">
+                    <div style={{width:'40px', height: (maxTotalSpent - totalSpent)/2 + 'px', backgroundColor:'aliceblue', margin: '0 auto'}}></div>
+                    <div style={{width:'40px', height: totalSpent/2 + 'px', backgroundColor:'deepskyblue', margin: '0 auto'}}></div>
                     <p>{months[i].substring(0,3)}</p>
                     <p>${totalSpent}</p>
                 </div>
