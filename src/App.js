@@ -87,6 +87,12 @@ class App extends Component {
         })
     }
 
+    getMonthlyDetail(month) {
+        this.setState({
+            activeMonth: month
+        })
+    }
+
     render() {
         const allWants = this.state.wants.map((want, index) =>
             <Item
@@ -131,13 +137,18 @@ class App extends Component {
                     onChange={this.handleDateChange.bind(this)}
                 />
 
-                <MonthlyChart purchases={this.state.purchases} />
+                <MonthlyChart
+                    month={this.state.activeMonth}
+                    purchases={this.state.purchases}
+                    getMonthlyDetail={this.getMonthlyDetail.bind(this)}
+                />
 
                 <MonthlyInfo
                     month={this.state.activeMonth}
                     year={this.state.activeYear}
                     updatePurchasedItem={this.updatePurchasedItem.bind(this)}
                     deletePurchasedItem={this.deletePurchasedItem.bind(this)}
+
                     purchases={purchasedItems}
                 />
 
