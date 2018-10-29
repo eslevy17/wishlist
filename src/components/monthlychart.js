@@ -9,9 +9,30 @@ class MonthlyChart extends Component {
     }
 
     componentWillReceiveProps(newProps) {
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        var targetMonth;
+        for (var i = 0; i < 12; i ++) {
+            document.getElementById('monthBar' + i).style.borderBottom = '6px solid transparent';
+            if (months[i] === newProps.month) {
+                targetMonth = i;
+            }
+        }
+        document.getElementById('monthBar' + targetMonth).style.borderBottom = '6px solid dodgerblue'
         this.setState({
             purchases: newProps.purchases
         });
+    }
+
+    componentDidMount() {
+        document.getElementById('monthBar' + new Date().getMonth()).style.borderBottom = '6px solid dodgerblue'
+    }
+
+    getMonthlyDetail(monthName, monthNum) {
+        this.props.getMonthlyDetail(monthName);
+        for (var i = 0; i < 12; i ++) {
+            document.getElementById('monthBar' + i).style.borderBottom = '6px solid transparent'
+        }
+        document.getElementById('monthBar' + monthNum).style.borderBottom = '6px solid dodgerblue'
     }
 
     render() {
@@ -38,12 +59,16 @@ class MonthlyChart extends Component {
                     totalSpent += this.state.purchases[months[i]][j].price;
                 }
             }
+            let monthNum = i;
+            let monthName = months[i];
             purchases.push(
-                <div key={months[i]} className="textAlignCenter">
-                    <div style={{width:'40px', height: (maxTotalSpent - totalSpent)/2 + 'px', backgroundColor:'aliceblue', margin: '0 auto'}}></div>
-                    <div style={{width:'40px', height: totalSpent/2 + 'px', backgroundColor:'deepskyblue', margin: '0 auto'}}></div>
+                <div key={months[i]} className="singleMonthBar">
+                    <div className="singleBarAvailableDiv" style={{height: maxTotalSpent/2 + 'px'}} onClick={() => this.getMonthlyDetail(monthName, monthNum)}>
+                        <div className="singleBarSpentDiv" style={{height: totalSpent/2 + 'px'}}></div>
+                    </div>
                     <p>{months[i].substring(0,3)}</p>
                     <p>${totalSpent}</p>
+                    <div id={'monthBar' + monthNum} className="invisibleTriangle"></div>
                 </div>
             )
         }

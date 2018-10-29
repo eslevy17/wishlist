@@ -4,20 +4,27 @@ class DatePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentMonth: '',
-            currentYear: ''
-        }
-
-    }
-    componentWillMount() {
-        this.setState({
             currentMonth: this.props.month,
             currentYear: this.props.year
-        })
+        }
     }
+
     componentDidMount() {
         document.getElementById('monthSelector').options[new Date().getMonth()].selected = true;
         document.getElementById('yearSelector').options[0].selected = true;
+    }
+
+    componentWillReceiveProps(newProps) {
+        this.setState({
+            currentMonth: newProps.month
+        })
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        for (var i = 0; i < months.length; i ++) {
+            if (months[i] === newProps.month) {
+                break
+            }
+        }
+        document.getElementById('monthSelector').options[i].selected = true;
     }
 
     handleChange(event) {
@@ -51,7 +58,7 @@ class DatePicker extends Component {
                     <option value="December">December</option>
                 </select>
 
-                <label htmlFor="yearSelector"> of: </label>
+                <label htmlFor="yearSelector"> of </label>
                 <select id="yearSelector" name="activeYear" onChange={this.handleChange.bind(this)}>
                     {newYearList}
                 </select>

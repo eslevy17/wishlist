@@ -8,6 +8,8 @@ class MonthlyInfo extends Component {
             month: this.props.month,
             year: this.props.year,
             limit: 500,
+            newLimit: 500,
+            editingLimit: false,
             purchases: this.props.purchases,
         }
     }
@@ -24,6 +26,28 @@ class MonthlyInfo extends Component {
 
     deletePurchasedItem(index, list) {
         this.props.deletePurchasedItem(index, list, this.state.month)
+    }
+
+    editLimit() {
+        this.setState({editingLimit: true})
+        // this.props.editLimit(this.state.month)
+    }
+
+    cancel() {
+        this.setState({editingLimit: false})
+    }
+
+    handleLimitChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    }
+
+    updateLimit() {
+        this.setState({
+            limit: this.state.newLimit,
+            editingLimit: false
+        })
     }
 
     render() {
@@ -59,6 +83,21 @@ class MonthlyInfo extends Component {
             spentbar = <div className="spentBar" style={{width: '100%'}}></div>
             limitbar = null;
         }
+        var editLimitButton = <button onClick={this.editLimit.bind(this)}>Edit</button>;
+        if (this.state.editingLimit) {
+            editLimitButton =
+                <React.Fragment>
+                    <input
+                        type="number"
+                        name="newLimit"
+                        value={this.state.newLimit}
+                        placeholder={this.state.newLimit}
+                        onChange={this.handleLimitChange.bind(this)}
+                    ></input>
+                    <button onClick={this.updateLimit.bind(this)}>Update</button>
+                    <button onClick={this.cancel.bind(this)}>Cancel</button>
+                </React.Fragment>
+        }
 
         return (
             <div className="monthlyInfo">
@@ -66,7 +105,7 @@ class MonthlyInfo extends Component {
                 <span className="limitRow">
                     <p><b>Spent:</b> ${spent}</p>
                     <p><b>Available:</b> ${this.state.limit - spent}</p>
-                    <p><b>Limit:</b> ${this.state.limit}</p>
+                    <p><b>Limit:</b> ${this.state.limit} {editLimitButton}</p>
                 </span>
                 <div className="progressBar">
                     {spentbar}

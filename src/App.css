@@ -3,7 +3,8 @@
 }
 
 body {
-    padding: 12px;
+    padding: 18px;
+    background-color: lightgrey;
 }
 
 .textAlignCenter {
@@ -19,59 +20,70 @@ input {
     padding: 4px;
 }
 
-button {
-    /* font-size: 12px;
-    padding: 4px 6px;
-    background-color: white;
-    border: solid;
-    border-width: 1px;
-    border-color: darkgrey;
-    border-radius: 5px; */
-}
-
 /* MAIN APP */
 
 .mainApp {
     display: grid;
     grid-template-rows: auto auto auto;
-    grid-gap: 24px;
+    grid-gap: 18px;
 }
 
-.wantsAndNeeds {
-    display: grid;
-    grid-template-columns: 100%;
-    grid-gap: 24px;
-}
-@media only screen and (min-width: 960px) {
-    .wantsAndNeeds {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.expenseBlock {
-    border: 1px solid black;
-    padding: 0 18px 18px 18px;
-    box-sizing: border-box;
-}
-
-.productTable {
-    border-right: 1px solid black;
-    border-left: 1px solid black;
-    width: 100%;
-    box-sizing: border-box;
+select {
+    font-size: 16px;
 }
 
 /* DATEPICKER */
 
 .datepicker {
     text-align: center;
-    margin: 0 0 12px 0;
-    padding: 8px 0 18px 0;
-    border-bottom: 1px solid black;
+    padding: 18px 0;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 10px;
 }
 
-select {
-    font-size: 16px;
+/* MONTHLY CHART */
+
+.monthChartRow {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    position: relative;
+    border: 1px solid black;
+    padding: 18px 0 0 0;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.singleMonthBar {
+    text-align: center;
+}
+
+.singleBarAvailableDiv {
+    width: 40px;
+    background-color: aliceblue;
+    margin: 0 auto;
+    position: relative;
+    box-sizing: border-box;
+}
+.singleBarAvailableDiv:hover {
+    border: 1px solid grey;
+    cursor: pointer;
+}
+
+.singleBarSpentDiv {
+    width: 40px;
+    background-color: deepskyblue;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0px;
+}
+
+.invisibleTriangle {
+    border-bottom: 6px solid transparent;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    width: 0px;
+    margin: 0 auto 12px auto;
 }
 
 /* MONTHLY INFO */
@@ -79,12 +91,14 @@ select {
 .monthlyInfo {
     border: 1px solid black;
     padding: 0 18px 18px 18px;
+    background-color: white;
+    border-radius: 10px;
 }
 
 .limitRow {
     display: grid;
     grid-template-columns: auto auto auto;
-    text-align: center;
+    justify-content: space-evenly;
 }
 
 .spentBar {
@@ -103,20 +117,52 @@ select {
 
 }
 
+/* WANTS AND NEEDS BLOCKS */
+
+.wantsAndNeeds {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-gap: 18px;
+}
+@media only screen and (min-width: 960px) {
+    .wantsAndNeeds {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.expenseBlock {
+    border: 1px solid black;
+    padding: 0 18px 18px 18px;
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.productTable {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 /* ITEM */
 
 .itemRow {
     display: grid;
     grid-template-columns: 31% 20% 17% 17% 17%;
-    border-top: 1px solid black;
+    border-top: 1px solid darkgrey;
+    border-right: 1px solid darkgrey;
+    border-left: 1px solid darkgrey;
     padding: 12px;
+    align-items: center;
 }
 
 .itemRow:first-child {
-
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 }
 .itemRow:last-child {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid darkgrey;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .itemRowItem {
@@ -125,16 +171,6 @@ select {
 
 .currentEdit {
     border-top: none;
-}
-
-/* MONTHLY CHART */
-
-.monthChartRow {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    position: relative;
-    border: 1px solid black;
-    padding: 18px 0 0 0;
 }
 
 /* NEW ITEM FORM */
