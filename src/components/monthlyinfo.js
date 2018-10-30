@@ -20,17 +20,16 @@ class MonthlyInfo extends Component {
         }
     }
 
-    updatePurchasedItem(updatedItem, index, list) {
-        this.props.updatePurchasedItem(updatedItem, index, list, this.state.month)
+    updatePurchasedItem(updatedItem, index, list, month, year) {
+        this.props.updatePurchasedItem(updatedItem, index, list, this.state.month, this.state.year)
     }
 
     deletePurchasedItem(index, list) {
-        this.props.deletePurchasedItem(index, list, this.state.month)
+        this.props.deletePurchasedItem(index, list, this.state.month, this.state.year)
     }
 
     editLimit() {
         this.setState({editingLimit: true})
-        // this.props.editLimit(this.state.month)
     }
 
     cancel() {
@@ -53,22 +52,46 @@ class MonthlyInfo extends Component {
     render() {
         var spent = 0;
         var limit = this.state.limit;
-        var purchases = null;
+        var wants = [];
+        var needs = [];
         if (this.props.purchases) {
             for (var i = 0; i < this.props.purchases.length; i ++) {
-                spent += this.props.purchases[i].price
+                spent += this.props.purchases[i].price;
+                if (this.props.purchases[i].list === 'wants') {
+                    wants.push(this.props.purchases[i])
+                }
+                if (this.props.purchases[i].list === 'needs') {
+                    needs.push(this.props.purchases[i])
+                }
             }
-            purchases = this.state.purchases.map((purchasedItem, index) =>
+
+            wants = wants.map((item, index) =>
                 <Item
-                    name={purchasedItem.name}
-                    price={purchasedItem.price}
-                    key={purchasedItem.name}
+                    name={item.name}
+                    price={item.price}
+                    key={item.name}
                     index={index}
                     activeMonth={this.state.month}
                     activeYear={this.state.year}
                     update={this.updatePurchasedItem.bind(this)}
                     delete={this.deletePurchasedItem.bind(this)}
-                    list='purchasedItems'
+                    list='wants'
+                    purchased={true}
+                />
+            );
+
+            needs = needs.map((item, index) =>
+                <Item
+                    name={item.name}
+                    price={item.price}
+                    key={item.name}
+                    index={index}
+                    activeMonth={this.state.month}
+                    activeYear={this.state.year}
+                    update={this.updatePurchasedItem.bind(this)}
+                    delete={this.deletePurchasedItem.bind(this)}
+                    list='needs'
+                    purchased={true}
                 />
             );
         }
@@ -90,6 +113,7 @@ class MonthlyInfo extends Component {
                     <input
                         type="number"
                         name="newLimit"
+                        className="skinnyInput"
                         value={this.state.newLimit}
                         placeholder={this.state.newLimit}
                         onChange={this.handleLimitChange.bind(this)}
@@ -105,16 +129,22 @@ class MonthlyInfo extends Component {
                 <span className="limitRow">
                     <p><b>Spent:</b> ${spent}</p>
                     <p><b>Available:</b> ${this.state.limit - spent}</p>
-                    <p><b>Limit:</b> ${this.state.limit} {editLimitButton}</p>
+                    <p><b>Limit: </b> ${this.state.limit} {editLimitButton}</p>
                 </span>
                 <div className="progressBar">
                     {spentbar}
                     {limitbar}
                 </div>
 
-                <h4>Purchases so far:</h4>
-                <div className="productTable">
-                    {purchases}
+                <div className="purchasesThisMonth">
+                    <div>
+                        <span className="centerMe"><h4>Wants:</h4></span>
+                        <div>{wants}</div>
+                    </div>
+                    <div>
+                        <span className="centerMe"><h4>Needs:</h4></span>
+                        <div>{needs}</div>
+                    </div>
                 </div>
             </div>
         )
