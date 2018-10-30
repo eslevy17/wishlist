@@ -20,6 +20,10 @@ input {
     padding: 4px;
 }
 
+.skinnyInput {
+    width: 100px;
+}
+
 /* MAIN APP */
 
 .mainApp {
@@ -96,8 +100,7 @@ select {
 }
 
 .limitRow {
-    display: grid;
-    grid-template-columns: auto auto auto;
+    display: flex;
     justify-content: space-evenly;
 }
 
@@ -113,8 +116,14 @@ select {
     display: inline-block;
 }
 
-.progressBar {
+.purchasesThisMonth {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 18px;
+}
 
+.centerMe {
+    text-align: center;
 }
 
 /* WANTS AND NEEDS BLOCKS */
@@ -138,21 +147,16 @@ select {
     border-radius: 10px;
 }
 
-.productTable {
-    width: 100%;
-    box-sizing: border-box;
-}
-
 /* ITEM */
 
 .itemRow {
     display: grid;
-    grid-template-columns: 31% 20% 17% 17% 17%;
+    grid-template-columns: 34% 17% 17% 17% 17%;
     border-top: 1px solid darkgrey;
     border-right: 1px solid darkgrey;
     border-left: 1px solid darkgrey;
     padding: 12px;
-    align-items: center;
+    align-items: baseline;
 }
 
 .itemRow:first-child {

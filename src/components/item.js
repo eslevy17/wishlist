@@ -6,6 +6,8 @@ class Item extends Component {
         this.state = {
             name: this.props.name,
             price: parseInt(this.props.price),
+            list: this.props.list,
+            purchased: this.props.purchased,
             editing: false,
             midEdit: false,
             purchasing: false,
@@ -63,7 +65,7 @@ class Item extends Component {
 
     purchaseConfirm(event) {
         event.preventDefault();
-        this.props.purchase(this.state.name, parseInt(this.state.price), this.state.activeMonth, this.state.activeYear);
+        this.props.purchase(this.state.name, parseInt(this.state.price), this.state.list, this.state.activeMonth, this.state.activeYear);
         this.delete();
         this.setState({
             purchasing: false,
@@ -81,13 +83,14 @@ class Item extends Component {
 
     componentDidUpdate() {
         if (this.state.purchasing && !this.state.midEdit) {
-            document.getElementById('itemMonthSelector').options[new Date().getMonth()].selected = true
+            document.getElementById('itemMonthSelector').options[new Date().getMonth()].selected = true;
+            document.getElementById('itemYearSelector').options[1].selected = true;
         }
     }
 
     render() {
         var purchaseButton = null;
-        if (this.props.list !== 'purchasedItems') {
+        if (!this.state.purchased) {
             purchaseButton = <span className="itemRowItem textAlignCenter"><button onClick={this.purchaseStart.bind(this)}>Purchase</button></span>
         }
 
@@ -113,6 +116,14 @@ class Item extends Component {
         }
 
         if (this.state.purchasing) {
+            var yearList = [];
+            for (var i = -1; i < 2; i ++) {
+                yearList.push(new Date().getFullYear() + i)
+            }
+            var newYearList = yearList.map(year =>
+                <option key={year} value={year}>{year}</option>
+            )
+
             standardForm = null;
             purchaseForm =
                 <div className="itemRow currentEdit">
@@ -130,8 +141,8 @@ class Item extends Component {
                         <option value="November">November</option>
                         <option value="December">December</option>
                     </select>
-                    <select className="itemRowItem">
-                        <option>{this.props.activeYear}</option>
+                    <select id="itemYearSelector" name="activeYear" className="itemRowItem" onChange={this.handleChange.bind(this)}>
+                        {newYearList}
                     </select>
                     <span className="itemRowItem textAlignCenter"><button onClick={this.purchaseConfirm.bind(this)}>Purchase!</button></span>
                     <span className="itemRowItem textAlignCenter"><button onClick={this.cancelPurchase.bind(this)}>Cancel</button></span>

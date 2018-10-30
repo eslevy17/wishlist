@@ -28,6 +28,35 @@ class App extends Component {
         }
     }
 
+    // purchases will eventually look like this:
+    //
+    // purchases: {
+    //     2018: {
+    //         January: {
+    //             limit: 500,
+    //             purchases: []
+    //         },
+    //         February: {
+    //             limit: 400,
+    //             purchases: []
+    //         },
+    //         March: {
+    //             limit: 500,
+    //             purchases: []
+    //         }
+    //     },
+    //     2019: {
+    //         January: {
+    //             limit: 500,
+    //             purchases: []
+    //         },
+    //         February: {
+    //             limit: 400,
+    //             purchases: []
+    //         }
+    //     }
+    // }
+
     addNew(newItem, list) {
         var oldItems = this.state[list].slice();
         oldItems.push(newItem);
@@ -58,30 +87,35 @@ class App extends Component {
         })
     }
 
-    purchase(name, price, month, year) {
+    purchase(name, price, list, month, year) {
         var newPurchases = this.state.purchases;
-        if (!newPurchases[month]) {
-            newPurchases[month] = []
+        if (!newPurchases[year]) {
+            newPurchases[year] = {}
         }
-        newPurchases[month].push({
+        if (!newPurchases[year][month]) {
+            newPurchases[year][month] = {limit: 500, purchases: []}
+        }
+        newPurchases[year][month].purchases.push({
             name: name,
-            price: price});
+            price: price,
+            list: list
+        });
         this.setState({
             purchases: newPurchases
         })
     }
 
-    updatePurchasedItem(updatedItem, index, list, month) {
+    updatePurchasedItem(updatedItem, index, list, month, year) {
         var newPurchases = this.state.purchases;
-        newPurchases[month][index] = updatedItem;
+        newPurchases[year][month].purchases[index] = updatedItem;
         this.setState({
             purchases: newPurchases
         })
     }
 
-    deletePurchasedItem(index, list, month) {
+    deletePurchasedItem(index, list, month, year) {
         var newPurchases = this.state.purchases;
-        newPurchases[month].splice(index, 1);
+        newPurchases[year][month].purchases.splice(index, 1);
         this.setState({
             purchases: newPurchases
         })
@@ -106,6 +140,7 @@ class App extends Component {
                 update={this.update.bind(this)}
                 purchase={this.purchase.bind(this)}
                 list='wants'
+                purchased={false}
             />
         );
         const allNeeds = this.state.needs.map((need, index) =>
@@ -120,14 +155,18 @@ class App extends Component {
                 update={this.update.bind(this)}
                 purchase={this.purchase.bind(this)}
                 list='needs'
+                purchased={false}
             />
         );
 
         var purchasedItems = null;
-        if (this.state.purchases[this.state.activeMonth]) {
-            purchasedItems = this.state.purchases[this.state.activeMonth];
+        var yearlyPurchasedItems = null;
+        if (this.state.purchases[this.state.activeYear]) {
+            yearlyPurchasedItems = this.state.purchases[this.state.activeYear];
+            if (this.state.purchases[this.state.activeYear][this.state.activeMonth]) {
+                purchasedItems = this.state.purchases[this.state.activeYear][this.state.activeMonth].purchases;
+            }
         }
-        // purchases={this.state.purchases[this.state.activeMonth]}
 
         return (
             <div className="mainApp">
@@ -139,7 +178,8 @@ class App extends Component {
 
                 <MonthlyChart
                     month={this.state.activeMonth}
-                    purchases={this.state.purchases}
+                    year={this.state.activeYear}
+                    purchases={yearlyPurchasedItems}
                     getMonthlyDetail={this.getMonthlyDetail.bind(this)}
                 />
 
@@ -148,27 +188,30 @@ class App extends Component {
                     year={this.state.activeYear}
                     updatePurchasedItem={this.updatePurchasedItem.bind(this)}
                     deletePurchasedItem={this.deletePurchasedItem.bind(this)}
-
                     purchases={purchasedItems}
                 />
 
                 <div className="wantsAndNeeds">
                     <div className="expenseBlock">
                         <h3>Cool stuff I want:</h3>
-                        <div className="productTable">
+                        <div>
                             {allWants}
                         </div>
                         <NewItemForm
-                            handleSubmit={this.addNew.bind(this)} list='wants'/>
+                            handleSubmit={this.addNew.bind(this)}
+                            list='wants'
+                        />
                     </div>
 
                     <div className="expenseBlock">
                         <h3>Important stuff I need:</h3>
-                        <div className="productTable">
+                        <div>
                             {allNeeds}
                         </div>
                         <NewItemForm
-                            handleSubmit={this.addNew.bind(this)} list='needs'/>
+                            handleSubmit={this.addNew.bind(this)}
+                            list='needs'
+                        />
                     </div>
                 </div>
 

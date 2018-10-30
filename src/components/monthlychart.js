@@ -4,6 +4,7 @@ class MonthlyChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            activeYear: this.props.year,
             purchases: this.props.purchases
         }
     }
@@ -42,11 +43,13 @@ class MonthlyChart extends Component {
 
         for (var k = 0; k < months.length; k ++) {
             let totalSpent = 0;
-            if (this.state.purchases[months[k]]) {
-                for (var m = 0; m < this.state.purchases[months[k]].length; m++) {
-                    totalSpent += this.state.purchases[months[k]][m].price;
-                    if (totalSpent > maxTotalSpent) {
-                        maxTotalSpent = totalSpent
+            if (this.state.purchases) {
+                if (this.state.purchases[months[k]]) {
+                    for (var m = 0; m < this.state.purchases[months[k]].purchases.length; m++) {
+                        totalSpent += this.state.purchases[months[k]].purchases[m].price;
+                        if (totalSpent > maxTotalSpent) {
+                            maxTotalSpent = totalSpent
+                        }
                     }
                 }
             }
@@ -54,11 +57,14 @@ class MonthlyChart extends Component {
 
         for (var i = 0; i < months.length; i ++) {
             let totalSpent = 0;
-            if (this.state.purchases[months[i]]) {
-                for (var j = 0; j < this.state.purchases[months[i]].length; j++) {
-                    totalSpent += this.state.purchases[months[i]][j].price;
+            if (this.state.purchases) {
+                if (this.state.purchases[months[i]]) {
+                    for (var j = 0; j < this.state.purchases[months[i]].purchases.length; j++) {
+                        totalSpent += this.state.purchases[months[i]].purchases[j].price;
+                    }
                 }
             }
+
             let monthNum = i;
             let monthName = months[i];
             purchases.push(
