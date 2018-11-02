@@ -7,8 +7,8 @@ class MonthlyInfo extends Component {
         this.state = {
             month: this.props.month,
             year: this.props.year,
-            limit: 500,
-            newLimit: 500,
+            monthlyLimit: this.props.monthlyLimit,
+            newLimit: this.props.monthlyLimit,
             editingLimit: false,
             purchases: this.props.purchases,
         }
@@ -18,6 +18,10 @@ class MonthlyInfo extends Component {
         for (var newProp in newProps) {
             this.setState({[newProp]: newProps[newProp]});
         }
+        this.setState({
+            editingLimit: false,
+            newLimit: newProps.monthlyLimit
+        })
     }
 
     updatePurchasedItem(updatedItem, index, list, month, year) {
@@ -38,20 +42,21 @@ class MonthlyInfo extends Component {
 
     handleLimitChange(event) {
         this.setState({
-            [event.target.name]: event.target.value
+            [event.target.name]: event.target.value,
+            newLimit: event.target.value
         })
     }
 
     updateLimit() {
+        this.props.updateMonthlyLimit(this.state.year, this.state.month, this.state.newLimit)
         this.setState({
-            limit: this.state.newLimit,
             editingLimit: false
         })
     }
 
     render() {
         var spent = 0;
-        var limit = this.state.limit;
+        var monthlyLimit = this.state.monthlyLimit;
         var wants = [];
         var needs = [];
         if (this.props.purchases) {
@@ -69,7 +74,7 @@ class MonthlyInfo extends Component {
                 <Item
                     name={item.name}
                     price={item.price}
-                    key={item.name}
+                    key={item.id}
                     index={index}
                     activeMonth={this.state.month}
                     activeYear={this.state.year}
@@ -84,7 +89,7 @@ class MonthlyInfo extends Component {
                 <Item
                     name={item.name}
                     price={item.price}
-                    key={item.name}
+                    key={item.id}
                     index={index}
                     activeMonth={this.state.month}
                     activeYear={this.state.year}
@@ -98,9 +103,9 @@ class MonthlyInfo extends Component {
 
         var spentbar;
         var limitbar;
-        if (spent <= limit) {
-            spentbar = <div className="spentBar" style={{width: (spent/limit) * 100 + '%'}}></div>
-            limitbar = <div className="availableBar" style={{width: ((limit - spent)/limit) * 100 + '%'}}></div>
+        if (spent <= monthlyLimit) {
+            spentbar = <div className="spentBar" style={{width: (spent/monthlyLimit) * 100 + '%'}}></div>
+            limitbar = <div className="availableBar" style={{width: ((monthlyLimit - spent)/monthlyLimit) * 100 + '%'}}></div>
         }
         else {
             spentbar = <div className="spentBar" style={{width: '100%'}}></div>
@@ -125,11 +130,11 @@ class MonthlyInfo extends Component {
 
         return (
             <div className="monthlyInfo">
-                <h3>Details for: {this.state.month} of {this.state.year}</h3>
+                <h3 className="titleRow">Details for: {this.state.month} of {this.state.year}</h3>
                 <span className="limitRow">
                     <p><b>Spent:</b> ${spent}</p>
-                    <p><b>Available:</b> ${this.state.limit - spent}</p>
-                    <p><b>Limit: </b> ${this.state.limit} {editLimitButton}</p>
+                    <p><b>Available:</b> ${this.state.monthlyLimit - spent}</p>
+                    <p><b>Limit: </b> ${this.state.monthlyLimit} {editLimitButton}</p>
                 </span>
                 <div className="progressBar">
                     {spentbar}
@@ -138,11 +143,11 @@ class MonthlyInfo extends Component {
 
                 <div className="purchasesThisMonth">
                     <div>
-                        <span className="centerMe"><h4>Wants:</h4></span>
+                        <span className="centerMe"><h4>Wants purchased:</h4></span>
                         <div>{wants}</div>
                     </div>
                     <div>
-                        <span className="centerMe"><h4>Needs:</h4></span>
+                        <span className="centerMe"><h4>Needs purchased:</h4></span>
                         <div>{needs}</div>
                     </div>
                 </div>

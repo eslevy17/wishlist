@@ -7,6 +7,7 @@ class Item extends Component {
             name: this.props.name,
             price: parseInt(this.props.price),
             list: this.props.list,
+            id: this.props.id,
             purchased: this.props.purchased,
             editing: false,
             midEdit: false,
@@ -17,7 +18,7 @@ class Item extends Component {
     }
 
     delete() {
-        this.props.delete(this.props.index, this.props.list);
+        this.props.delete(this.props.index, this.props.list, this.props.id);
     }
 
     edit() {
@@ -37,8 +38,10 @@ class Item extends Component {
     update(event) {
         event.preventDefault();
         let updatedItem = {
+            id: this.state.id,
             name: this.state.name,
-            price: parseInt(this.state.price)
+            price: parseInt(this.state.price),
+            list: this.props.list
         }
         this.props.update(updatedItem, this.props.index, this.props.list);
         this.setState({

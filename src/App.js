@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 
 import Item from './components/item';
 import NewItemForm from './components/newitemform';
@@ -13,18 +14,19 @@ class App extends Component {
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         this.state = {
             wants: [
-                {name: 'computer', price: 300},
-                {name: 'shoes', price: 100},
-                {name: 'socks', price: 40},
+                // {name: 'computer', price: 300},
+                // {name: 'shoes', price: 100},
+                // {name: 'socks', price: 40},
             ],
             needs: [
-                {name: 'random bills', price: 100},
-                {name: 'other bills', price: 50},
-                {name: 'even more bills', price: 80},
+                // {name: 'random bills', price: 100},
+                // {name: 'other bills', price: 50},
+                // {name: 'even more bills', price: 80},
             ],
             activeMonth: months[new Date().getMonth()],
             activeYear: new Date().getFullYear().toString(),
             purchases: {},
+            standardLimit: 500
         }
     }
 
@@ -56,29 +58,59 @@ class App extends Component {
     //         }
     //     }
     // }
-
-    addNew(newItem, list) {
-        var oldItems = this.state[list].slice();
-        oldItems.push(newItem);
-        this.setState({
-            [list]: oldItems
-        })
+    componentDidMount() {
+        axios.get('/api/needs')
+            .then(data => this.setState({needs: data.data}))
+            .catch(errs => console.log(errs))
+        axios.get('/api/wants')
+            .then(data => this.setState({wants: data.data}))
+            .catch(errs => console.log(errs))
     }
 
-    delete(index, list) {
-        var oldItems = this.state[list].slice();
-        oldItems.splice(index, 1);
-        this.setState({
-            [list]: oldItems
-        })
+    addNew(newItem, list) {
+        axios.post('/api/' + list, newItem)
+            .then(data => {
+                var oldItems = this.state[list].slice();
+                oldItems.push(newItem);
+                this.setState({
+                    [list]: oldItems
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
+    }
+
+    delete(index, list, id) {
+        axios.delete('/api/' + list + '/' + id)
+            .then(data => {
+                var oldItems = this.state[list].slice();
+                oldItems.splice(index, 1);
+                this.setState({
+                    [list]: oldItems
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
+
     }
 
     update(updatedItem, index, list) {
-        var oldItems = this.state[list].slice();
-        oldItems[index] = updatedItem;
-        this.setState({
-            [list]: oldItems
-        })
+        axios.put('/api/' + list, updatedItem)
+            .then(data => {
+                var oldItems = this.state[list].slice();
+                oldItems[index] = updatedItem;
+                this.setState({
+                    [list]: oldItems
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
     }
 
     handleDateChange(name, newValue) {
@@ -93,7 +125,13 @@ class App extends Component {
             newPurchases[year] = {}
         }
         if (!newPurchases[year][month]) {
-            newPurchases[year][month] = {limit: 500, purchases: []}
+            newPurchases[year][month] = {}
+        }
+        if (!newPurchases[year][month].limit) {
+            newPurchases[year][month].limit = this.state.standardLimit
+        }
+        if (!newPurchases[year][month].purchases) {
+            newPurchases[year][month].purchases = []
         }
         newPurchases[year][month].purchases.push({
             name: name,
@@ -127,12 +165,27 @@ class App extends Component {
         })
     }
 
+    updateMonthlyLimit(year, month, newLimit) {
+        var purchases = this.state.purchases;
+        if (!purchases[year]) {
+            purchases[year] = {}
+        }
+        if (!purchases[year][month]) {
+            purchases[year][month] = {}
+        }
+        purchases[year][month].limit = newLimit;
+        this.setState({
+            purchases: purchases
+        })
+    }
+
     render() {
         const allWants = this.state.wants.map((want, index) =>
             <Item
                 name={want.name}
                 price={want.price}
-                key={want.name}
+                key={want.id}
+                id={want.id}
                 index={index}
                 activeMonth={this.state.activeMonth}
                 activeYear={this.state.activeYear}
@@ -147,7 +200,8 @@ class App extends Component {
             <Item
                 name={need.name}
                 price={need.price}
-                key={need.name}
+                key={need.id}
+                id={need.id}
                 index={index}
                 activeMonth={this.state.activeMonth}
                 activeYear={this.state.activeYear}
@@ -161,35 +215,42 @@ class App extends Component {
 
         var purchasedItems = null;
         var yearlyPurchasedItems = null;
+        var monthlyLimit = this.state.standardLimit;
         if (this.state.purchases[this.state.activeYear]) {
             yearlyPurchasedItems = this.state.purchases[this.state.activeYear];
             if (this.state.purchases[this.state.activeYear][this.state.activeMonth]) {
+                monthlyLimit = this.state.purchases[this.state.activeYear][this.state.activeMonth].limit;
                 purchasedItems = this.state.purchases[this.state.activeYear][this.state.activeMonth].purchases;
             }
         }
 
         return (
             <div className="mainApp">
-                <DatePicker
-                    month={this.state.activeMonth}
-                    year={this.state.activeYear}
-                    onChange={this.handleDateChange.bind(this)}
-                />
+                <div className="records">
+                    <DatePicker
+                        month={this.state.activeMonth}
+                        year={this.state.activeYear}
+                        onChange={this.handleDateChange.bind(this)}
+                    />
 
-                <MonthlyChart
-                    month={this.state.activeMonth}
-                    year={this.state.activeYear}
-                    purchases={yearlyPurchasedItems}
-                    getMonthlyDetail={this.getMonthlyDetail.bind(this)}
-                />
+                    <MonthlyChart
+                        month={this.state.activeMonth}
+                        year={this.state.activeYear}
+                        purchases={yearlyPurchasedItems}
+                        standardLimit={this.state.standardLimit}
+                        getMonthlyDetail={this.getMonthlyDetail.bind(this)}
+                    />
 
-                <MonthlyInfo
-                    month={this.state.activeMonth}
-                    year={this.state.activeYear}
-                    updatePurchasedItem={this.updatePurchasedItem.bind(this)}
-                    deletePurchasedItem={this.deletePurchasedItem.bind(this)}
-                    purchases={purchasedItems}
-                />
+                    <MonthlyInfo
+                        month={this.state.activeMonth}
+                        year={this.state.activeYear}
+                        monthlyLimit={monthlyLimit}
+                        updatePurchasedItem={this.updatePurchasedItem.bind(this)}
+                        deletePurchasedItem={this.deletePurchasedItem.bind(this)}
+                        updateMonthlyLimit={this.updateMonthlyLimit.bind(this)}
+                        purchases={purchasedItems}
+                    />
+                </div>
 
                 <div className="wantsAndNeeds">
                     <div className="expenseBlock">
