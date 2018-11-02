@@ -24,12 +24,12 @@ class MonthlyInfo extends Component {
         })
     }
 
-    updatePurchasedItem(updatedItem, index, list, month, year) {
-        this.props.updatePurchasedItem(updatedItem, index, list, this.state.month, this.state.year)
+    updatePurchasedItem(updatedItem, index, list, id) {
+        this.props.updatePurchasedItem(updatedItem, index, list, this.state.month, this.state.year, id)
     }
 
-    deletePurchasedItem(index, list) {
-        this.props.deletePurchasedItem(index, list, this.state.month, this.state.year)
+    deletePurchasedItem(index, list, id) {
+        this.props.deletePurchasedItem(index, list, this.state.month, this.state.year, id)
     }
 
     editLimit() {
@@ -75,6 +75,7 @@ class MonthlyInfo extends Component {
                     name={item.name}
                     price={item.price}
                     key={item.id}
+                    id={item.id}
                     index={index}
                     activeMonth={this.state.month}
                     activeYear={this.state.year}
@@ -90,6 +91,7 @@ class MonthlyInfo extends Component {
                     name={item.name}
                     price={item.price}
                     key={item.id}
+                    id={item.id}
                     index={index}
                     activeMonth={this.state.month}
                     activeYear={this.state.year}
@@ -108,7 +110,7 @@ class MonthlyInfo extends Component {
             limitbar = <div className="availableBar" style={{width: ((monthlyLimit - spent)/monthlyLimit) * 100 + '%'}}></div>
         }
         else {
-            spentbar = <div className="spentBar" style={{width: '100%'}}></div>
+            spentbar = <div id="spentBar" className="spentBar" style={{width: '100%'}}></div>
             limitbar = null;
         }
         var editLimitButton = <button onClick={this.editLimit.bind(this)}>Edit</button>;

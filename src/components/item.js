@@ -43,7 +43,7 @@ class Item extends Component {
             price: parseInt(this.state.price),
             list: this.props.list
         }
-        this.props.update(updatedItem, this.props.index, this.props.list);
+        this.props.update(updatedItem, this.props.index, this.props.list, this.props.id);
         this.setState({
             editing: false,
             midEdit: false
@@ -68,7 +68,7 @@ class Item extends Component {
 
     purchaseConfirm(event) {
         event.preventDefault();
-        this.props.purchase(this.state.name, parseInt(this.state.price), this.state.list, this.state.activeMonth, this.state.activeYear);
+        this.props.purchase(this.state.name, parseInt(this.state.price), this.state.list, this.state.activeMonth, this.state.activeYear, this.state.id);
         this.delete();
         this.setState({
             purchasing: false,
