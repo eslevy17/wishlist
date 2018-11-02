@@ -53,8 +53,8 @@ class App extends Component {
     componentDidMount() {
         this.getWants();
         this.getNeeds();
-        this.getLimits();
         this.getPurchases();
+        this.getLimits();
     }
 
     getWants() {
@@ -92,7 +92,7 @@ class App extends Component {
     getPurchases() {
         axios.get('/api/purchases')
             .then(data => {
-                var purchases = this.state.purchases;
+                var purchases = {};
                 for (var i = 0; i < data.data.length; i ++) {
                     if (!purchases[data.data[i].year]) {
                         purchases[data.data[i].year] = {};
@@ -263,8 +263,8 @@ class App extends Component {
         }
         axios.post('/api/limits', newLimitObject)
             .then(data => {
-                this.getLimits();
                 this.getPurchases();
+                this.getLimits();
             })
             .catch(errs => console.log(errs))
     }
