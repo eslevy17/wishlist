@@ -28,8 +28,14 @@ input {
 
 .mainApp {
     display: grid;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto;
     grid-gap: 18px;
+}
+
+.records {
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 10px;
 }
 
 select {
@@ -41,9 +47,9 @@ select {
 .datepicker {
     text-align: center;
     padding: 18px 0;
-    border: 1px solid black;
+    /* border: 1px solid black;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 10px; */
 }
 
 /* MONTHLY CHART */
@@ -52,10 +58,10 @@ select {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     position: relative;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     padding: 18px 0 0 0;
-    background-color: white;
-    border-radius: 10px;
+    /* background-color: white; */
+    /* border-radius: 10px; */
 }
 
 .singleMonthBar {
@@ -93,10 +99,14 @@ select {
 /* MONTHLY INFO */
 
 .monthlyInfo {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     padding: 0 18px 18px 18px;
-    background-color: white;
-    border-radius: 10px;
+    /* background-color: white; */
+    /* border-radius: 10px; */
+}
+
+.titleRow {
+    text-align: center;
 }
 
 .limitRow {

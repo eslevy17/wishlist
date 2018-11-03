@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 
 import Item from './components/item';
 import NewItemForm from './components/newitemform';
@@ -12,19 +13,12 @@ class App extends Component {
         super();
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         this.state = {
-            wants: [
-                {name: 'computer', price: 300},
-                {name: 'shoes', price: 100},
-                {name: 'socks', price: 40},
-            ],
-            needs: [
-                {name: 'random bills', price: 100},
-                {name: 'other bills', price: 50},
-                {name: 'even more bills', price: 80},
-            ],
+            wants: [],
+            needs: [],
             activeMonth: months[new Date().getMonth()],
             activeYear: new Date().getFullYear().toString(),
             purchases: {},
+            standardLimit: 500
         }
     }
 
@@ -56,29 +50,126 @@ class App extends Component {
     //         }
     //     }
     // }
-
-    addNew(newItem, list) {
-        var oldItems = this.state[list].slice();
-        oldItems.push(newItem);
-        this.setState({
-            [list]: oldItems
-        })
+    componentDidMount() {
+        this.getWants();
+        this.getNeeds();
+        this.getPurchases();
+        this.getLimits();
     }
 
-    delete(index, list) {
-        var oldItems = this.state[list].slice();
-        oldItems.splice(index, 1);
-        this.setState({
-            [list]: oldItems
-        })
+    getWants() {
+        axios.get('/api/wants')
+            .then(data => this.setState({wants: data.data}))
+            .catch(errs => console.log(errs))
+    }
+
+    getNeeds() {
+        axios.get('/api/needs')
+            .then(data => this.setState({needs: data.data}))
+            .catch(errs => console.log(errs))
+    }
+
+    getLimits() {
+        axios.get('/api/limits')
+            .then(data => {
+                var purchases = this.state.purchases;
+                for (var i = 0; i < data.data.length; i ++) {
+                    if (!purchases[data.data[i].year]) {
+                        purchases[data.data[i].year] = {}
+                    }
+                    if (!purchases[data.data[i].year][data.data[i].month]) {
+                        purchases[data.data[i].year][data.data[i].month] = {}
+                    }
+                    purchases[data.data[i].year][data.data[i].month].limit = data.data[i].limitation;
+                }
+                this.setState({
+                    purchases: purchases
+                })
+            })
+            .catch(errs => console.log(errs))
+    }
+
+    getPurchases() {
+        axios.get('/api/purchases')
+            .then(data => {
+                var purchases = {};
+                for (var i = 0; i < data.data.length; i ++) {
+                    if (!purchases[data.data[i].year]) {
+                        purchases[data.data[i].year] = {};
+                    }
+                    if (!purchases[data.data[i].year][data.data[i].month]) {
+                        purchases[data.data[i].year][data.data[i].month] = {};
+                    }
+                    if (!purchases[data.data[i].year][data.data[i].month].purchases) {
+                        purchases[data.data[i].year][data.data[i].month].purchases = [];
+                    }
+                    if (!purchases[data.data[i].year][data.data[i].month].limit) {
+                        purchases[data.data[i].year][data.data[i].month].limit = this.state.standardLimit;
+                    }
+                    purchases[data.data[i].year][data.data[i].month].purchases.push(data.data[i])
+                }
+                this.setState({
+                    purchases: purchases
+                })
+            })
+            .catch(errs => console.log(errs))
+    }
+
+    addNew(newItem, list) {
+        axios.post('/api/' + list, newItem)
+            .then(data => {
+                if (list == 'wants') {
+                    this.getWants();
+                }
+                if (list == 'needs') {
+                    this.getNeeds();
+                }
+                var oldItems = this.state[list].slice();
+                oldItems.push(newItem);
+                this.setState({
+                    [list]: oldItems
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
+    }
+
+    delete(index, list, id) {
+        axios.delete('/api/' + list + '/' + id)
+            .then(data => {
+                var oldItems = this.state[list].slice();
+                oldItems.splice(index, 1);
+                this.setState({
+                    [list]: oldItems
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
     }
 
     update(updatedItem, index, list) {
-        var oldItems = this.state[list].slice();
-        oldItems[index] = updatedItem;
-        this.setState({
-            [list]: oldItems
-        })
+        axios.put('/api/' + list, updatedItem)
+            .then(data => {
+                if (list == 'wants') {
+                    this.getWants();
+                }
+                if (list == 'needs') {
+                    this.getNeeds();
+                }
+                var oldItems = this.state[list].slice();
+                oldItems[index] = updatedItem;
+                this.setState({
+                    [list]: oldItems
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
     }
 
     handleDateChange(name, newValue) {
@@ -87,38 +178,75 @@ class App extends Component {
         })
     }
 
-    purchase(name, price, list, month, year) {
-        var newPurchases = this.state.purchases;
-        if (!newPurchases[year]) {
-            newPurchases[year] = {}
-        }
-        if (!newPurchases[year][month]) {
-            newPurchases[year][month] = {limit: 500, purchases: []}
-        }
-        newPurchases[year][month].purchases.push({
+    purchase(name, price, list, month, year, id) {
+        var newItem = {
+            id: id,
             name: name,
             price: price,
-            list: list
-        });
-        this.setState({
-            purchases: newPurchases
-        })
+            list: list,
+            month: month,
+            year: year
+        }
+        axios.post('/api/purchases', newItem)
+            .then(data => {
+                var newPurchases = this.state.purchases;
+                if (!newPurchases[year]) {
+                    newPurchases[year] = {}
+                }
+                if (!newPurchases[year][month]) {
+                    newPurchases[year][month] = {}
+                }
+                if (!newPurchases[year][month].limit) {
+                    newPurchases[year][month].limit = this.state.standardLimit
+                }
+                if (!newPurchases[year][month].purchases) {
+                    newPurchases[year][month].purchases = []
+                }
+                newPurchases[year][month].purchases.push({
+                    name: name,
+                    price: price,
+                    list: list
+                });
+                this.setState({
+                    purchases: newPurchases
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
     }
 
-    updatePurchasedItem(updatedItem, index, list, month, year) {
-        var newPurchases = this.state.purchases;
-        newPurchases[year][month].purchases[index] = updatedItem;
-        this.setState({
-            purchases: newPurchases
-        })
+    updatePurchasedItem(updatedItem, index, list, month, year, id) {
+        axios.put('/api/purchases', updatedItem)
+            .then(data => {
+                this.getPurchases();
+                var newPurchases = this.state.purchases;
+                newPurchases[year][month].purchases[index] = updatedItem;
+                this.setState({
+                    purchases: newPurchases
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
     }
 
-    deletePurchasedItem(index, list, month, year) {
-        var newPurchases = this.state.purchases;
-        newPurchases[year][month].purchases.splice(index, 1);
-        this.setState({
-            purchases: newPurchases
-        })
+    deletePurchasedItem(index, list, month, year, id) {
+        axios.delete('/api/purchases/' + id)
+            .then(data => {
+                this.getPurchases();
+                var newPurchases = this.state.purchases;
+                newPurchases[year][month].purchases.splice(index, 1);
+                this.setState({
+                    purchases: newPurchases
+                })
+            })
+            .catch(errs => {
+                alert('Something went wrong!');
+                console.log(errs);
+            })
     }
 
     getMonthlyDetail(month) {
@@ -127,12 +255,27 @@ class App extends Component {
         })
     }
 
+    updateMonthlyLimit(year, month, newLimit) {
+        var newLimitObject = {
+            year: year,
+            month: month,
+            limitation: parseInt(newLimit)
+        }
+        axios.post('/api/limits', newLimitObject)
+            .then(data => {
+                this.getPurchases();
+                this.getLimits();
+            })
+            .catch(errs => console.log(errs))
+    }
+
     render() {
         const allWants = this.state.wants.map((want, index) =>
             <Item
                 name={want.name}
                 price={want.price}
-                key={want.name}
+                key={want.id}
+                id={want.id}
                 index={index}
                 activeMonth={this.state.activeMonth}
                 activeYear={this.state.activeYear}
@@ -147,7 +290,8 @@ class App extends Component {
             <Item
                 name={need.name}
                 price={need.price}
-                key={need.name}
+                key={need.id}
+                id={need.id}
                 index={index}
                 activeMonth={this.state.activeMonth}
                 activeYear={this.state.activeYear}
@@ -161,35 +305,42 @@ class App extends Component {
 
         var purchasedItems = null;
         var yearlyPurchasedItems = null;
+        var monthlyLimit = this.state.standardLimit;
         if (this.state.purchases[this.state.activeYear]) {
             yearlyPurchasedItems = this.state.purchases[this.state.activeYear];
             if (this.state.purchases[this.state.activeYear][this.state.activeMonth]) {
+                monthlyLimit = this.state.purchases[this.state.activeYear][this.state.activeMonth].limit;
                 purchasedItems = this.state.purchases[this.state.activeYear][this.state.activeMonth].purchases;
             }
         }
 
         return (
             <div className="mainApp">
-                <DatePicker
-                    month={this.state.activeMonth}
-                    year={this.state.activeYear}
-                    onChange={this.handleDateChange.bind(this)}
-                />
+                <div className="records">
+                    <DatePicker
+                        month={this.state.activeMonth}
+                        year={this.state.activeYear}
+                        onChange={this.handleDateChange.bind(this)}
+                    />
 
-                <MonthlyChart
-                    month={this.state.activeMonth}
-                    year={this.state.activeYear}
-                    purchases={yearlyPurchasedItems}
-                    getMonthlyDetail={this.getMonthlyDetail.bind(this)}
-                />
+                    <MonthlyChart
+                        month={this.state.activeMonth}
+                        year={this.state.activeYear}
+                        purchases={yearlyPurchasedItems}
+                        standardLimit={this.state.standardLimit}
+                        getMonthlyDetail={this.getMonthlyDetail.bind(this)}
+                    />
 
-                <MonthlyInfo
-                    month={this.state.activeMonth}
-                    year={this.state.activeYear}
-                    updatePurchasedItem={this.updatePurchasedItem.bind(this)}
-                    deletePurchasedItem={this.deletePurchasedItem.bind(this)}
-                    purchases={purchasedItems}
-                />
+                    <MonthlyInfo
+                        month={this.state.activeMonth}
+                        year={this.state.activeYear}
+                        monthlyLimit={monthlyLimit}
+                        updatePurchasedItem={this.updatePurchasedItem.bind(this)}
+                        deletePurchasedItem={this.deletePurchasedItem.bind(this)}
+                        updateMonthlyLimit={this.updateMonthlyLimit.bind(this)}
+                        purchases={purchasedItems}
+                    />
+                </div>
 
                 <div className="wantsAndNeeds">
                     <div className="expenseBlock">
