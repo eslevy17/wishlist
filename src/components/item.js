@@ -17,6 +17,12 @@ class Item extends Component {
         }
     }
 
+    componentWillReceiveProps(newProps) {
+        for (var newProp in newProps) {
+            this.setState({[newProp]: newProps[newProp]});
+        }
+    }
+
     delete() {
         this.props.delete(this.props.index, this.props.list, this.props.id);
     }

@@ -50,11 +50,17 @@ class App extends Component {
     //         }
     //     }
     // }
-    componentDidMount() {
+
+    componentWillMount() {
         this.getWants();
         this.getNeeds();
+        // this.getLimits();
         this.getPurchases();
         this.getLimits();
+    }
+
+    componentDidUpdate() {
+        console.log(this.state)
     }
 
     getWants() {
@@ -124,11 +130,11 @@ class App extends Component {
                 if (list == 'needs') {
                     this.getNeeds();
                 }
-                var oldItems = this.state[list].slice();
-                oldItems.push(newItem);
-                this.setState({
-                    [list]: oldItems
-                })
+                // var oldItems = this.state[list].slice();
+                // oldItems.push(newItem);
+                // this.setState({
+                //     [list]: oldItems
+                // })
             })
             .catch(errs => {
                 alert('Something went wrong!');
@@ -139,11 +145,17 @@ class App extends Component {
     delete(index, list, id) {
         axios.delete('/api/' + list + '/' + id)
             .then(data => {
-                var oldItems = this.state[list].slice();
-                oldItems.splice(index, 1);
-                this.setState({
-                    [list]: oldItems
-                })
+                if (list == 'wants') {
+                    this.getWants();
+                }
+                if (list == 'needs') {
+                    this.getNeeds();
+                }
+                // var oldItems = this.state[list].slice();
+                // oldItems.splice(index, 1);
+                // this.setState({
+                //     [list]: oldItems
+                // })
             })
             .catch(errs => {
                 alert('Something went wrong!');
@@ -160,11 +172,11 @@ class App extends Component {
                 if (list == 'needs') {
                     this.getNeeds();
                 }
-                var oldItems = this.state[list].slice();
-                oldItems[index] = updatedItem;
-                this.setState({
-                    [list]: oldItems
-                })
+                // var oldItems = this.state[list].slice();
+                // oldItems[index] = updatedItem;
+                // this.setState({
+                //     [list]: oldItems
+                // })
             })
             .catch(errs => {
                 alert('Something went wrong!');
@@ -189,27 +201,29 @@ class App extends Component {
         }
         axios.post('/api/purchases', newItem)
             .then(data => {
-                var newPurchases = this.state.purchases;
-                if (!newPurchases[year]) {
-                    newPurchases[year] = {}
-                }
-                if (!newPurchases[year][month]) {
-                    newPurchases[year][month] = {}
-                }
-                if (!newPurchases[year][month].limit) {
-                    newPurchases[year][month].limit = this.state.standardLimit
-                }
-                if (!newPurchases[year][month].purchases) {
-                    newPurchases[year][month].purchases = []
-                }
-                newPurchases[year][month].purchases.push({
-                    name: name,
-                    price: price,
-                    list: list
-                });
-                this.setState({
-                    purchases: newPurchases
-                })
+                this.getPurchases();
+                this.getLimits();
+                // var newPurchases = this.state.purchases;
+                // if (!newPurchases[year]) {
+                //     newPurchases[year] = {}
+                // }
+                // if (!newPurchases[year][month]) {
+                //     newPurchases[year][month] = {}
+                // }
+                // if (!newPurchases[year][month].limit) {
+                //     newPurchases[year][month].limit = this.state.standardLimit
+                // }
+                // if (!newPurchases[year][month].purchases) {
+                //     newPurchases[year][month].purchases = []
+                // }
+                // newPurchases[year][month].purchases.push({
+                //     name: name,
+                //     price: price,
+                //     list: list
+                // });
+                // this.setState({
+                //     purchases: newPurchases
+                // })
             })
             .catch(errs => {
                 alert('Something went wrong!');
@@ -221,11 +235,12 @@ class App extends Component {
         axios.put('/api/purchases', updatedItem)
             .then(data => {
                 this.getPurchases();
-                var newPurchases = this.state.purchases;
-                newPurchases[year][month].purchases[index] = updatedItem;
-                this.setState({
-                    purchases: newPurchases
-                })
+                this.getLimits();
+                // var newPurchases = this.state.purchases;
+                // newPurchases[year][month].purchases[index] = updatedItem;
+                // this.setState({
+                //     purchases: newPurchases
+                // })
             })
             .catch(errs => {
                 alert('Something went wrong!');
@@ -237,11 +252,12 @@ class App extends Component {
         axios.delete('/api/purchases/' + id)
             .then(data => {
                 this.getPurchases();
-                var newPurchases = this.state.purchases;
-                newPurchases[year][month].purchases.splice(index, 1);
-                this.setState({
-                    purchases: newPurchases
-                })
+                this.getLimits();
+                // var newPurchases = this.state.purchases;
+                // newPurchases[year][month].purchases.splice(index, 1);
+                // this.setState({
+                //     purchases: newPurchases
+                // })
             })
             .catch(errs => {
                 alert('Something went wrong!');

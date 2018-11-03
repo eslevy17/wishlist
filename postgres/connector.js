@@ -107,7 +107,6 @@ function updateWant (req, res) {
 function deleteNeed (req, res) {
     const text = 'DELETE FROM needs WHERE id = ($1)';
     const values = [req.params.id];
-    console.log(req.params.id)
     client.query(text, values, (err, data) => {
         if (err) {
             res.json(err)
