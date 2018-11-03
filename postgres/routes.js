@@ -15,7 +15,6 @@ function router(app) {
     app.post('/api/needs', api.addNeed)
     app.post('/api/wants', api.addWant)
     app.post('/api/purchases', api.purchase)
-
     app.post('/api/limits', api.updateMonthlyLimit)
 
     app.put('/api/needs', api.updateNeed)
